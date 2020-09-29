@@ -1,0 +1,53 @@
+% find out global percentage of correct answers
+% find out percentage of correct answers for each condition
+
+% 1 trial 2 Question number, 3 Condition, 4 Instrument, 5 Correct answer, 6 User answer 
+% Answers: 1-4 = conditions correct answers, 5 = total correct answers.
+
+clear all;
+
+total = 72; %total number of questions
+
+files = dir('Experment datalogs/*.txt');
+
+for entry = 1:length(files)
+
+    logs(entry) = importdata(files(entry).name, ",");
+    
+    %sort the data by instruments on collumn 4. 1 = Bass, 2 = Synth, 3 = Trumpet
+    logs(entry).data = sortrows(logs(entry).data,logs(entry).data(6));
+    
+    %correct answers for each of the 4 condition
+    for i = 1:4
+        %all correct answers for each condition
+        answers(entry,i) = countAnswers(logs(entry).data, 3, i);
+        %bass correct answeres for eachcondition
+        answers(entry, i + 10) = countAnswers(logs(entry).data(1:23,:), 3, i);
+        %synth correct answers for each condition
+        answers(entry, i + 14) = countAnswers(logs(entry).data(24:47,:), 3, i);
+        %trumpet correct answers for each condition
+        answers(entry, i + 18) = countAnswers(logs(entry).data(47:end,:), 3, i);
+    end
+
+    
+    %total number of correct answers
+    answers(entry,5) = sum(answers(entry, 1:4));
+    
+    %total percentage of correct answers
+    answers(entry,10) = 100 * answers(entry,5)/total;
+    
+    for i = 1:4
+       answers(entry,i+5) = 100 * answers(entry,i)/(total/4);  
+    end 
+end
+%average correct answers / condition
+for i = 1:22
+    answers(35,i) = mean(answers(:,i));
+end
+
+collumNames =   {'Cond_1', 'Cond_2', 'Cond_3', 'Cond_4', 'Total',...
+                'Cond_1 Perc', 'Cond_2 Perc', 'Cond_3 Perc', 'Cond_4 Perc', 'Total Perc',...
+                'B_Cond_1', 'B_Cond_2', 'B_Cond_3', 'B_Cond_4', 'Bass Total',...
+                'Synth_Cond_1', 'Synth_Cond_2', 'Synth_Cond_3', 'Synth_Cond_4', 'Synth Total',...
+                'Trum_Cond_1', 'Trum_Cond_2', 'Trum_Cond_3', 'Trum_Cond_4', 'Trump Total'};
+
