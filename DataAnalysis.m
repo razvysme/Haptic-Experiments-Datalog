@@ -4,6 +4,10 @@
 % 1 trial 2 Question number, 3 Condition, 4 Instrument, 5 Correct answer, 6 User answer 
 % Answers: 1-4 = conditions correct answers, 5 = total correct answers.
 
+
+% Independant variable is the proccessing algorithm?
+% Data paramtric(normal) except for condition 3(sine waves)
+% Friedman test todo
 clear all;
 
 total = 72; %total number of questions
@@ -28,8 +32,7 @@ for entry = 1:length(files)
         %trumpet correct answers for each condition
         answers(entry, i + 15) = countAnswers(logs(entry).data(47:end,:), 3, i);
     end
-
-    
+  
     %total number of correct answers
     answers(entry, 5) = sum(answers(entry, 1:4));
     %total number of correct answers for bass
@@ -38,8 +41,6 @@ for entry = 1:length(files)
     answers(entry, 15) = sum(answers(entry, 11:14));
     %total number of correct answers for trumpet
     answers(entry, 20) = sum(answers(entry, 16:19));
-    
-    
     %total percentage of correct answers
     answers(entry, 25) =  answers(entry,5)/total;
     
@@ -47,11 +48,25 @@ for entry = 1:length(files)
        answers(entry,i+20) = answers(entry,i)/(total/4);  
     end 
 end
+
 %average correct answers / condition
 for i = 1:25
-    answers(35,i) = mean(answers(:,i));
-    answers(36,i) = std(answers(:,i));
+    answers(35,i) = mean(answers(1:34,i));
+    answers(36,i) = std(answers(1:34,i));
+    %normality 
+    answers(37,i) = jbtest(answers(1:34,i)); % chi-squared is sensitive to small samples, therefore JB is chosen
+    %answers(38,i) = chi2gof(answers(1:34,i));
 end
+
+%Friedman test for all instruments
+answers(38,5) = friedman(answers(1:34,1:4), 2, 'off');
+%Friedman test for bass
+answers(38,10) = friedman(answers(1:34,6:9), 2, 'off');
+%Friedman test for synth
+answers(38,15) = friedman(answers(1:34,11:14), 2, 'off');
+%Friedman test for trumpet
+answers(38,20) = friedman(answers(1:34,16:19), 2, 'off');
+
 
 
 t = tiledlayout(2,2); 
@@ -71,7 +86,6 @@ title('Sine waves');
 nexttile
 histogram(answers(1:25,4));
 title('Haptic reinforcement');
-
 
 collumNames =   {'Cond_1', 'Cond_2', 'Cond_3', 'Cond_4', 'Total',...
                 'B_Cond_1', 'B_Cond_2', 'B_Cond_3', 'B_Cond_4', 'Bass Total',...
