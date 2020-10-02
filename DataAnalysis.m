@@ -69,23 +69,44 @@ answers(38,20) = friedman(answers(1:34,16:19), 2, 'off');
 
 
 
-t = tiledlayout(2,2); 
-title(t, 'Number of correct answers occurances for each condition');
-t.Padding = 'none';
-t.TileSpacing = 'none';
+% t = tiledlayout(2,2); 
+% title(t, 'Number of correct answers occurances for each condition');
+% t.Padding = 'none';
+% t.TileSpacing = 'none';
+% 
+% nexttile
+% histogram(answers(1:25,1));
+% title('Baseline')
+% nexttile
+% histogram(answers(1:25,2));
+% title('Pitch shift');
+% nexttile
+% histogram(answers(1:25,3));
+% title('Sine waves');
+% nexttile
+% histogram(answers(1:25,4));
+% title('Haptic reinforcement');
+
+figure
+layout = tiledlayout(2,2); 
+title(layout, 'Number of correct answers occurances for each condition (1-4)');
+layout.Padding = 'none';
+layout.TileSpacing = 'none';
 
 nexttile
-histogram(answers(1:25,1));
-title('Baseline')
+boxplot(answers(1:34,6:9))
+title('Bass')
 nexttile
-histogram(answers(1:25,2));
-title('Pitch shift');
+boxplot(answers(1:34,11:14))
+title('Synthesizer');
 nexttile
-histogram(answers(1:25,3));
-title('Sine waves');
+boxplot(answers(1:34,16:19))
+title('Trumpet');
 nexttile
-histogram(answers(1:25,4));
-title('Haptic reinforcement');
+boxplot(answers(1:34,1:4))
+title('Cumulated');
+
+
 
 collumNames =   {'Cond_1', 'Cond_2', 'Cond_3', 'Cond_4', 'Total',...
                 'B_Cond_1', 'B_Cond_2', 'B_Cond_3', 'B_Cond_4', 'Bass Total',...
